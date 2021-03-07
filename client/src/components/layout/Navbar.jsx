@@ -11,7 +11,7 @@ const Navbar = () => {
             style={{
               fontFamily: "monospace"
             }}
-            className="col s5 brand-logo center green-text"
+            className="col s5 brand-logo center teal-text"
           >
             <i className="material-icons">account_balance</i>
  

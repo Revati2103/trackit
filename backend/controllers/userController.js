@@ -1,15 +1,15 @@
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const keys = require("../../config/keys");
+
 
 
 // Load input validation
-const validateRegisterInput = require("../../validation/register");
-const validateLoginInput = require("../../validation/login");
+const validateRegisterInput = require("../validation/register");
+const validateLoginInput = require("../validation/login");
 
 // Load User model
-const User = require("../../models/User");
+const User = require("../models/User");
 
 // @route POST api/users/register
 // @desc Register user
@@ -85,7 +85,7 @@ const loginUser = async (req, res) => {
         // Sign token
         jwt.sign(
           payload,
-          keys.secretOrKey,
+          process.env.JWT_SECRET,
           {
             expiresIn: 31556926, // 1 year in seconds
           },

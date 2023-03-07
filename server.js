@@ -14,7 +14,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-//Passport middleware
+//Passport middleware .
 
 app.use(passport.initialize());
 

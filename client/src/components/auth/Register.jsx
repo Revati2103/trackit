@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link , useNavigate} from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { registerUser } from "../../actions/authActions";
 import classnames from "classnames";
 
-const Register = () => {
+const Register = ({auth}) => {
+  const navigate = useNavigate()
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -16,11 +17,15 @@ const Register = () => {
 
 
   const { name, email, password, password2, errors } = user;
+  
   useEffect(() => {
+    if(auth.isAuthenticated){
+      navigate("/dashboard")
+    }
     if (errors) {
       setUser((prevState) => ({ ...prevState, errors }));
     }
-  }, [errors]);
+  }, [errors, auth, navigate]);
 
   const onChange = e => {
     setUser({ ...user, [e.target.id]: e.target.value });

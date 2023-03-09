@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 
 const Dashboard = ({ auth: { user }, logoutUser }) => {
+
   const onLogoutClick = (e) => {
     e.preventDefault();
     logoutUser();

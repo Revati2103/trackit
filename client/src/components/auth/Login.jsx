@@ -1,27 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { loginUser } from "../../actions/authActions";
 import classnames from "classnames";
 
 
-const Login = ({ auth}) => {
+const Login = () => {
+
+  const dispatch = useDispatch()
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    errors: {}
   });
 
-  const { email, password, errors } = formData;
+  const { email, password } = formData;
+
+  const auth = useSelector(state => state.auth);
+  const errors = useSelector(state => state.errors);
 
   useEffect(() => {
     if (auth.isAuthenticated) {
    navigate("/dashboard");
     }
     if (errors) {
-    setFormData({ ...formData, errors });
+    setFormData((prevState) => ({ ...prevState, errors }));
     }
     }, [auth, errors, navigate]);
 
@@ -36,7 +40,7 @@ const Login = ({ auth}) => {
       password
     };
     console.log(userData);
-    loginUser(userData);
+    dispatch(loginUser(userData));
   };
 
   return (
@@ -110,16 +114,4 @@ const Login = ({ auth}) => {
   );
 };
 
-Login.propTypes = {
-loginUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
-};
-const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors
-});
-export default connect(
-  mapStateToProps,
-  { loginUser }
-)(Login);
+export default Login;

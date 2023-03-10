@@ -40,12 +40,16 @@ export const loginUser = (userData) => (dispatch) => {
       const navigate = useNavigate();
       navigate("/dashboard");
     })
-    .catch((err) =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
-      })
-    );
+    .catch(err => {
+      if (err.response) {
+          dispatch({
+              type: GET_ERRORS,
+              payload: err.response.data
+          });
+      } else {
+          console.log(err);
+      }
+  });
 };
 
 export const setCurrentUser = (decoded) => {

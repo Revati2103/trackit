@@ -11,6 +11,7 @@ import Login from './components/auth/Login';
 import PrivateRoute from './components/private-route/PrivateRoute';
 import Dashboard from './components/dashboard/Dashboard';
 import store from './store'
+import { Provider } from "react-redux";
 
 
 // Check if there is a token to keep the user logged in
@@ -39,7 +40,7 @@ if(localStorage.jwtToken){
 
 function App() {
   return ( 
-
+<Provider store={store}>
   <Router>
     <div className="App">
     
@@ -67,7 +68,7 @@ function App() {
     </div>
     </Router>
 
-
+    </Provider>
   );
 }
 

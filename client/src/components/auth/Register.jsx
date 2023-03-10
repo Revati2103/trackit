@@ -1,23 +1,25 @@
+
 import React, { useState, useEffect } from "react";
 import { Link , useNavigate} from "react-router-dom";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { registerUser } from "../../actions/authActions";
 import classnames from "classnames";
 
-const Register = ({auth}) => {
+const Register = () => {
+  
   const navigate = useNavigate()
+  const dispatch = useDispatch();
   const [user, setUser] = useState({
     name: "",
     email: "",
     password: "",
     password2: "",
-    errors: {}
   });
+  const { name, email, password, password2, } = user;
+  const auth = useSelector(state => state.auth);
+  const errors = useSelector(state => state.errors);
+ 
 
-
-  const { name, email, password, password2, errors } = user;
-  
   useEffect(() => {
     if(auth.isAuthenticated){
       navigate("/dashboard")
@@ -39,7 +41,7 @@ const Register = ({auth}) => {
       password,
       password2
     };
-    registerUser(newUser)
+    dispatch(registerUser(newUser));
   };
 
   return (
@@ -113,6 +115,8 @@ const Register = ({auth}) => {
                 })}
               />
               <label htmlFor="password2">Confirm Password</label>
+
+
               <span className="red-text">{errors.password2}</span>
             </div>
             <div className="col s12" style={{ paddingLeft: "11.250px" }}>
@@ -136,16 +140,7 @@ const Register = ({auth}) => {
   );
 };
 
-Register.propTypes = {
-  registerUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
-};
-const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors
-});
-export default connect(
-  mapStateToProps,
-  { registerUser }
-)(Register);
+export default Register;
+
+
+

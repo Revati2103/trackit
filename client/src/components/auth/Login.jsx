@@ -35,6 +35,7 @@ const Login = ({ auth}) => {
       email,
       password
     };
+    console.log(userData);
     loginUser(userData);
   };
 

@@ -12,8 +12,7 @@ const initialState = {
 };
 
 
-/* eslint-disable no-alert */
-export default function authReducer (state = initialState, action) {
+const authReducer = (state = initialState, action) => {
 
 
     switch(action.type){
@@ -33,3 +32,5 @@ export default function authReducer (state = initialState, action) {
                 return state;
     }
 }
+
+export default authReducer;

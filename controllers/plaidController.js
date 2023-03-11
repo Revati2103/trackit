@@ -3,8 +3,8 @@ const moment = require("moment");
 
 
 // Load Account and User models
-const Account = require("../../models/Account");
-const User = require("../../models/User");
+const Account = require("../models/Account");
+const User = require("../models/User");
 
 var PUBLIC_TOKEN = null;
 var ACCESS_TOKEN = null;
@@ -134,3 +134,9 @@ const getTransactions = async(req,res) => {
 }
 
 
+module.exports = {
+    addAccount,
+    deleteAccount,
+    getAllAccounts,
+    getTransactions
+}

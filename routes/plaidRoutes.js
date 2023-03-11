@@ -4,6 +4,13 @@ const plaid = require("plaid");
 const router = express.Router()
 const { Configuration, PlaidApi, PlaidEnvironments } = require("plaid");
 
+const {
+  addAccount,
+  deleteAccount,
+  getAllAccounts,
+  getTransactions
+} = require('../controllers/plaidController')
+
 // Configuration for the Plaid client
 const config = new Configuration({
     basePath: PlaidEnvironments[process.env.PLAID_ENV],

@@ -1,4 +1,5 @@
 const express = require("express");
+const passport = require("passport");
 const plaid = require("plaid");
 const router = express.Router()
 const { Configuration, PlaidApi, PlaidEnvironments } = require("plaid");
@@ -17,3 +18,15 @@ const config = new Configuration({
   
   //Instantiate the Plaid client with the configuration
   const client = new PlaidApi(config);
+
+  // Define the middleware to authenticate the request using passport
+const authenticate = passport.authenticate('jwt', { session: false });
+
+//Routes 
+
+router.post("/accounts/add", authenticate, addAccount);
+router.delete("/accounts/:id",authenticate, deleteAccount);
+router.get("/accounts",authenticate,getAllAccounts);
+router.post("/accounts/transactions", authenticate,getTransactions);
+
+  module.exports = router;

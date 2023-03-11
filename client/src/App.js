@@ -14,6 +14,8 @@ import store from './store'
 import { Provider } from "react-redux";
 
 
+
+
 // Check if there is a token to keep the user logged in
 
 if(localStorage.jwtToken){
@@ -38,31 +40,31 @@ if(localStorage.jwtToken){
   }
 }
 
+
+
 function App() {
   return ( 
 <Provider store={store}>
   <Router>
     <div className="App">
     
-       <Navbar />
+    <Navbar />
        
-<Routes>
-       <Route exact path="/" element={<Landing /> } />
-       <Route exact path="/register" element={<Register />} />
-       <Route exact path="/login" element={<Login />} />
-    
-       <Route
-        path="/dashboard"
-        element={<PrivateRoute element={<Dashboard />} />}
-      />
-
-
-
-
-       
-       <Route path="*" element={<Navigate to="/" />} />
-      
-</Routes>
+       <Routes>
+              <Route  path="/" element={<Landing /> } />
+              <Route  path="/register" element={<Register />} />
+              <Route  path="/login" element={<Login />} />
+              <Route
+                        path="/dashboard"
+                        element={
+                            <PrivateRoute>
+                                <Dashboard />
+                            </PrivateRoute>
+                        }
+                    />
+              <Route path="*" element={<Navigate to="/" />} />
+             
+       </Routes>
        
      
     </div>

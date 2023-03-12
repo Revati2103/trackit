@@ -12,7 +12,7 @@
 
 
 
-const Accounts = () => {
+const Accounts = ({user , accounts}) => {
   return (
     <div>Accounts</div>
   )

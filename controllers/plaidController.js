@@ -10,6 +10,46 @@ var PUBLIC_TOKEN = null;
 var ACCESS_TOKEN = null;
 var ITEM_ID = null;
 
+// Configuration for the Plaid client
+const config = new Configuration({
+  basePath: PlaidEnvironments[process.env.PLAID_ENV],
+  baseOptions: {
+    headers: {
+      "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,
+      "PLAID-SECRET": process.env.PLAID_SECRET,
+      "Plaid-Version": "2020-09-14",
+    },
+  },
+});
+
+//Instantiate the Plaid client with the configuration
+const client = new PlaidApi(config);
+
+//Creates a Link token and return it
+const createLinkToken = async (req, res, next) => {
+const tokenResponse = await client.linkTokenCreate({
+  user: { client_user_id: req.sessionID },
+  client_name: "Plaid's Tiny Quickstart",
+  language: "en",
+  products: ['auth', 'transactions', 'identity', 'income', 'assets', 'investments', 'liabilities'],
+  country_codes: ["US"],
+  redirect_uri: process.env.PLAID_SANDBOX_REDIRECT_URI,
+});
+res.json(tokenResponse.data);
+};
+
+// Exchanges the public token from Plaid Link for an access token
+const exchangePublicToken = async (req, res, next) => {
+const exchangeResponse = await client.itemPublicTokenExchange({
+  public_token: req.body.public_token,
+});
+
+// FOR DEMO PURPOSES ONLY
+// Store access_token in DB instead of session storage
+req.session.access_token = exchangeResponse.data.access_token;
+res.json(true);
+};
+
 // @route POST api/plaid/accounts/add
 // @desc Trade a public token for access token
 // @access Private
@@ -138,5 +178,7 @@ module.exports = {
     addAccount,
     deleteAccount,
     getAllAccounts,
-    getTransactions
+    getTransactions,
+    createLinkToken,
+    exchangePublicToken
 }

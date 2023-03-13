@@ -1,6 +1,6 @@
 
 const moment = require("moment");
-
+const { Configuration, PlaidApi, PlaidEnvironments } = require("plaid");
 
 // Load Account and User models
 const Account = require("../models/Account");

@@ -8,8 +8,6 @@ const {
   deleteAccount,
   getAllAccounts,
   getTransactions,
-  createLinkToken,
-  exchangePublicToken
 } = require('../controllers/plaidController')
 
 
@@ -18,8 +16,7 @@ const {
 const authenticate = passport.authenticate('jwt', { session: false });
 
 //Routes 
-router.get("/api/create_link_token", createLinkToken),
-router.post("/api/exchange_public_token",exchangePublicToken),
+
 router.post("/accounts/add", authenticate, addAccount);
 router.delete("/accounts/:id",authenticate, deleteAccount);
 router.get("/accounts",authenticate,getAllAccounts);

@@ -16,6 +16,7 @@ import { Provider } from "react-redux";
 
 
 
+
 // Check if there is a token to keep the user logged in
 
 if(localStorage.jwtToken){

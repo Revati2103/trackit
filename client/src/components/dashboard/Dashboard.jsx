@@ -1,104 +1,44 @@
 import React, {useEffect, useState, useCallback} from "react";
 import { logoutUser } from "../../actions/authActions";
 import { useSelector, useDispatch } from 'react-redux';
-import { usePlaidLink, PlaidLink} from 'react-plaid-link';
+import { usePlaidLink} from 'react-plaid-link';
 import { getAccounts, addAccount } from "../../actions/accountActions";
 import Accounts from './Accounts'
 
 
+
 const Dashboard = () => {
+  const [linkToken, setLinkToken] = useState(null);
+
 
   const dispatch = useDispatch();
 
-  const [publicToken, setPublicToken] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+ 
 
   const { user } = useSelector((state) => state.auth);
   const { accounts, accountsLoading } = useSelector((state) => state.plaid);
 
-  useEffect(() => {
-    const fetchPublicToken = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch("http://localhost:5000/api/exchange_public_token", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            access_token: process.env.REACT_APP_CLIENT_ID,
-          }),
-        });
-        const { public_token } = await response.json();
-        setPublicToken(public_token);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchPublicToken();
-  }, []);
+ 
+  // Creates a Link token
+  const createLinkToken = useCallback(async () => {
+    // For OAuth, use previously generated Link token
+    if (window.location.href.includes("?oauth_state_id=")) {
+      const linkToken = localStorage.getItem('link_token');
+      setLinkToken(linkToken);
+    } else {
+      const response = await fetch("/api/create_link_token", {});
+      const data = await response.json();
+      setLinkToken(data.link_token);
+      localStorage.setItem("link_token", data.link_token);
+    }
+  }, [setLinkToken]);
 
-  useEffect(() => {
-    dispatch(getAccounts());
-  }, []);
-
-
-
+  
   // Logout
   const onLogoutClick = (e) => {
     e.preventDefault();
     dispatch(logoutUser());
   };
-
-  // const handleOnSuccess = useCallback(async (publicToken) => {
-  //   setIsLoading(true);
-  //   await fetch("/api/exchange_public_token", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ public_token: publicToken }),
-  //   });
-   
-  // }, []);
-
-  // Creates a Link token
-  const createLinkToken = React.useCallback(async () => {
-    // For OAuth, use previously generated Link token
-    if (window.location.href.includes("?oauth_state_id=")) {
-      const linkToken = localStorage.getItem('link_token');
-      setPublicToken(linkToken);
-    } else {
-      const response = await fetch("http://localhost:5000/api/create_link_token", {});
-      const data = await response.json();
-      setPublicToken(data.link_token);
-      localStorage.setItem("link_token", data.link_token);
-    }
-  }, [setPublicToken]);
-
-  let isOauth = false;
-
-  // const config = {
-  //   publicToken,
-  //   handleOnSuccess,
-  // };
-  // if (window.location.href.includes("?oauth_state_id=")) {
-  //   config.receivedRedirectUri = window.location.href;
-  //   isOauth = true;
-  // }
-  // const { open, ready } = usePlaidLink(config);
-
-  // useEffect(() => {
-  //   if (publicToken == null) {
-  //     createLinkToken();
-  //   }
-  //   if (isOauth && ready) {
-  //     open();
-  //   }
-  // }, [publicToken, isOauth, ready, open]);
 
   //Add account
   const handleOnSuccess = (token, metadata) => {
@@ -108,6 +48,28 @@ const Dashboard = () => {
     };
     dispatch(addAccount(plaidData));
   };
+
+  // Initialize the Plaid Link instance
+  const { open, ready, error } = usePlaidLink({
+    token: linkToken,
+    onSuccess: handleOnSuccess,
+  });
+
+  // Handle the Plaid Link button click
+  const handleClick = () => {
+    if (linkToken) {
+      open();
+    } else {
+      console.log('Link token not available');
+    }
+  };
+
+
+  useEffect(() => {
+    createLinkToken();
+    dispatch(getAccounts());
+  }, []);
+
 
   let dashboardContent;
   if (accounts === null || accountsLoading) {
@@ -127,32 +89,10 @@ const Dashboard = () => {
             To get started, link your first bank account below
           </p>
           <div>
-          {/* {error && <div>{error.message}</div>}
-      <Link
-        token={publicToken}
-        onSuccess={handleOnSuccess} 
-      >
-        <button onClick={() => open()} disabled={!ready || isLoading}>
-          {isLoading ? 'Loading...' : 'Link your bank account'}
-        </button>
-      </Link> */}
-
-            <PlaidLink
-              buttonProps={{
-                className:
-                  "btn btn-large waves-effect waves-light hoverable blue accent-3 main-btn",
-              }}
-              plaidLinkProps={{
-                clientName: "YOUR_APP_NAME",
-                key: publicToken,
-                env: "sandbox",
-                product: ["transactions", "auth"],
-                onSuccess: handleOnSuccess,
-              }}
-              onScriptLoad={() => this.setState({ loaded: true })}
-            >
-              Link Account
-            </PlaidLink>
+      
+          <button onClick={handleClick} disabled={!ready || error}>
+      Connect Bank Account
+    </button>
           </div>
           <button
             onClick={onLogoutClick}

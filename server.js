@@ -1,11 +1,12 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv').config();
 const port = process.env.PORT || 5000
 const passport = require("passport");
 const userRoutes = require('./routes/userRoutes');
 const plaidRoutes = require('./routes/plaidRoutes')
+
+
 
 const connectDB = require('./config/db')
 connectDB()
@@ -14,6 +15,17 @@ const app = express();
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+
+
+
+  
+ 
+  
+
+
+  
+
+
 
 //Passport middleware .
 

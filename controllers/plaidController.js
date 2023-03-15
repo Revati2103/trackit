@@ -1,32 +1,12 @@
 
 const moment = require("moment");
-const { Configuration, PlaidApi, PlaidEnvironments } = require("plaid");
 
 // Load Account model
 const Account = require("../models/Account");
 
-
 var PUBLIC_TOKEN = null;
 var ACCESS_TOKEN = null;
 var ITEM_ID = null;
-
-// Configuration for the Plaid client
-const config = new Configuration({
-  basePath: PlaidEnvironments[process.env.PLAID_ENV],
-  baseOptions: {
-    headers: {
-      "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,
-      "PLAID-SECRET": process.env.PLAID_SECRET,
-      "Plaid-Version": "2020-09-14",
-    },
-  },
-});
-
-
-
-
-
-
 
 // @route POST api/plaid/accounts/add
 // @desc Trade a public token for access token

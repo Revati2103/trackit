@@ -5,33 +5,16 @@ import { usePlaidLink} from 'react-plaid-link';
 import { getAccounts, addAccount } from "../../actions/accountActions";
 import Accounts from './Accounts'
 
-
-
 const Dashboard = () => {
   const [linkToken, setLinkToken] = useState(null);
 
-
   const dispatch = useDispatch();
-
- 
 
   const { user } = useSelector((state) => state.auth);
   const { accounts, accountsLoading } = useSelector((state) => state.plaid);
 
  
-  // Creates a Link token
-  const createLinkToken = useCallback(async () => {
-    // For OAuth, use previously generated Link token
-    if (window.location.href.includes("?oauth_state_id=")) {
-      const linkToken = localStorage.getItem('link_token');
-      setLinkToken(linkToken);
-    } else {
-      const response = await fetch("/api/create_link_token", {});
-      const data = await response.json();
-      setLinkToken(data.link_token);
-      localStorage.setItem("link_token", data.link_token);
-    }
-  }, [setLinkToken]);
+  
 
   
   // Logout
@@ -66,7 +49,6 @@ const Dashboard = () => {
 
 
   useEffect(() => {
-    createLinkToken();
     dispatch(getAccounts());
   }, []);
 

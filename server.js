@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv').config();
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 5500
 const passport = require("passport");
 const userRoutes = require('./routes/userRoutes');
 const plaidRoutes = require('./routes/plaidRoutes')
@@ -15,15 +15,9 @@ const connectDB = require('./config/db')
 connectDB()
 
 const app = express();
-app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-
-app.use(
-    // FOR DEMO PURPOSES ONLY
-    // Use an actual secret key in production
-    session({ secret: "bosco", saveUninitialized: true, resave: true })
-  );
+app.use(cors())
 
 //Passport middleware .
 
@@ -53,7 +47,7 @@ const config = new Configuration({
       user: { client_user_id: req.sessionID },
       client_name: "TrackIt",
       language: "en",
-      products: ["auth"],
+      products: ["auth", "transactions"],
       country_codes: ["US"],
       redirect_uri: process.env.PLAID_REDIRECT_URI,
     });
@@ -72,14 +66,7 @@ const config = new Configuration({
     res.json(true);
   });
   
-  // Fetches balance data using the Node client library for Plaid
-  app.get("/api/balance", async (req, res, next) => {
-    const access_token = req.session.access_token;
-    const balanceResponse = await client.accountsBalanceGet({ access_token });
-    res.json({
-      Balance: balanceResponse.data,
-    });
-  });
+  
 
 // Routes
 app.use("/api/users", userRoutes);

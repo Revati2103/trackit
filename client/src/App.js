@@ -9,8 +9,8 @@ import { setCurrentUser, logoutUser } from "./actions/authActions";
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import PrivateRoute from './components/private-route/PrivateRoute';
-import Dashboard from './components/dashboard/Dashboard';
-//import Dashboard2 from './components/dashboard/Dashboard2';
+//import Dashboard from './components/dashboard/Dashboard';
+import Dashboard2 from './components/dashboard/Dashboard2';
 import store from './store'
 import { Provider } from "react-redux";
 
@@ -60,7 +60,7 @@ function App() {
                         path="/dashboard"
                         element={
                             <PrivateRoute>
-                                <Dashboard />
+                                <Dashboard2 />
                             </PrivateRoute>
                         }
                     />

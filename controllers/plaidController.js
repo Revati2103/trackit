@@ -13,6 +13,8 @@ var PUBLIC_TOKEN = null;
 var ACCESS_TOKEN = null;
 var ITEM_ID = null;
 
+
+
 // @route POST api/plaid/accounts/add
 // @desc Trade a public token for access token
 // @access Private
@@ -142,5 +144,4 @@ module.exports = {
     deleteAccount,
     getAllAccounts,
     getTransactions,
-
 }

@@ -8,6 +8,7 @@ const {
   deleteAccount,
   getAllAccounts,
   getTransactions,
+ 
 } = require('../controllers/plaidController')
 
 
@@ -16,7 +17,6 @@ const {
 const authenticate = passport.authenticate('jwt', { session: false });
 
 //Routes 
-
 router.post("/accounts/add", authenticate, addAccount);
 router.delete("/accounts/:id",authenticate, deleteAccount);
 router.get("/accounts",authenticate,getAllAccounts);

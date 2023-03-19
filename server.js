@@ -5,7 +5,7 @@ const port = process.env.PORT || 5000
 const passport = require("passport");
 const userRoutes = require('./routes/userRoutes');
 const plaidRoutes = require('./routes/plaidRoutes')
-const linkTokenRoutes = require('./routes/linkTokenRoutes')
+
 
 const connectDB = require('./config/db')
 connectDB()
@@ -23,9 +23,10 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 
 // Routes
+
 app.use("/api/users", userRoutes);
 app.use("/api/plaid", plaidRoutes);
-app.use("/api", linkTokenRoutes);
+
 
 
 app.listen(port, () => console.log(`Server started on port ${port}`))

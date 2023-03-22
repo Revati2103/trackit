@@ -37,7 +37,7 @@ const addAccount = async(req,res) => {
     
               // Check if account already exists for specific user
               Account.findOne({
-                userId: req.user.id,
+                userId: userId,
                 institutionId: institution_id
               })
                 .then(account => {

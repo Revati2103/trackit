@@ -1,4 +1,4 @@
-import { PlaidLink, usePlaidLink } from 'react-plaid-link';
+import { PlaidLink } from 'react-plaid-link';
 import {
     getTransactions,
     addAccount,
@@ -7,7 +7,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from 'react';
 import { logoutUser } from "../../actions/authActions";
-import MaterialTable from "material-table";
+import MaterialReactTable from "material-react-table";
 
 
 
@@ -137,7 +137,7 @@ const Accounts = ({user , accounts, publicToken}) => {
               )}
               from the past 30 days
             </p>
-            <MaterialTable
+            <MaterialReactTable
               columns={transactionsColumns}
               data={transactionsData}
               title="Search Transactions"
@@ -150,3 +150,5 @@ const Accounts = ({user , accounts, publicToken}) => {
 }
 
 export default Accounts
+
+

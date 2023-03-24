@@ -18,7 +18,7 @@ const Dashboard2 = () => {
   const onSuccess = useCallback(async (publicToken) => {
     
     try {
-        await fetch("/exchange_public_token", {
+        await fetch("/api/exchange_public_token", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -39,9 +39,11 @@ const Dashboard2 = () => {
       setToken(linkToken);
     } else {
       try{
-        const response = await fetch("/create_link_token", {});
+        const response = await fetch("/api/create_link_token", {});
         const data = await response.json();
+        console.log(data)
         setToken(data.link_token);
+       
         localStorage.setItem("link_token", data.link_token);
 
       }catch (error) {

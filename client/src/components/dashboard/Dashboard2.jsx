@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { usePlaidLink} from 'react-plaid-link';
 import { logoutUser } from "../../actions/authActions";
-import {  getAccounts } from "../../actions/accountActions";
+import {  getAccounts, addAccount } from "../../actions/accountActions";
 import Accounts from "./Accounts";
 import Spinner from "./Spinner";
 
@@ -13,23 +13,46 @@ const Dashboard2 = () => {
   const { accounts, accountsLoading } = useSelector((state) => state.plaid);
   const [token, setToken] = useState(null);
 
+  useEffect(() => {
+    dispatch(getAccounts());
+  }, [dispatch]);
 
-
-  const onSuccess = useCallback(async (publicToken) => {
+  // const onSuccess = useCallback(async (publicToken) => {
     
+  //   try {
+  //       await fetch("/api/exchange_public_token", {
+  //           method: "POST",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //           body: JSON.stringify({ public_token: publicToken }),
+  //         });
+  //         //dispatch(getAccounts());
+  //   } catch (error) {
+  //       console.log(error);
+  //   }
+    
+  // }, []);
+  // Add account
+  const onSuccess = useCallback(async (publicToken, metadata) => {
+    const plaidData = {
+      public_token: publicToken,
+      metadata: metadata,
+    };
+
     try {
-        await fetch("/api/exchange_public_token", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ public_token: publicToken }),
-          });
-          dispatch(getAccounts());
+      await fetch("/api/exchange_public_token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ public_token: publicToken }),
+      });
+
+      dispatch(addAccount(plaidData));
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-    
   }, [dispatch]);
 
   const createLinkToken = useCallback (async () => {
@@ -41,7 +64,6 @@ const Dashboard2 = () => {
       try{
         const response = await fetch("/api/create_link_token", {});
         const data = await response.json();
-        console.log(data)
         setToken(data.link_token);
        
         localStorage.setItem("link_token", data.link_token);
@@ -93,7 +115,7 @@ const Dashboard2 = () => {
     dashboardContent = <Spinner />;
   } else if (accounts.length > 0) {
     //dashboardContent = <Accounts />;
-    dashboardContent = <Accounts user={user} accounts={accounts} publicToken={token} />;
+    dashboardContent = <Accounts user={user} accounts={accounts} />;
   } else {
     dashboardContent = (
         <div className="row">

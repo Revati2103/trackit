@@ -1,4 +1,4 @@
-import { PlaidLink } from 'react-plaid-link';
+import { PlaidLink, usePlaidLink } from 'react-plaid-link';
 import {
     getTransactions,
     addAccount,

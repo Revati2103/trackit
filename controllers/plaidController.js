@@ -30,7 +30,7 @@ const addAccount = async(req,res) => {
     
         if (PUBLIC_TOKEN) {
           client
-            .exchangePublicToken(PUBLIC_TOKEN)
+            .itemPublicTokenExchange(PUBLIC_TOKEN)
             .then(exchangeResponse => {
               ACCESS_TOKEN = exchangeResponse.access_token;
               ITEM_ID = exchangeResponse.item_id;
@@ -118,7 +118,7 @@ const getTransactions = async(req,res) => {
             const institutionName = account.institutionName;
     
             client
-              .getTransactions(ACCESS_TOKEN, thirtyDaysAgo, today)
+              .transactionsGet(ACCESS_TOKEN, thirtyDaysAgo, today)
               .then(response => {
                 transactions.push({
                   accountName: institutionName,

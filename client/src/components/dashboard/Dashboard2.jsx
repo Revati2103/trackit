@@ -17,23 +17,6 @@ const Dashboard2 = () => {
     dispatch(getAccounts());
   }, [dispatch]);
 
-  // const onSuccess = useCallback(async (publicToken) => {
-    
-  //   try {
-  //       await fetch("/api/exchange_public_token", {
-  //           method: "POST",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //           body: JSON.stringify({ public_token: publicToken }),
-  //         });
-  //         //dispatch(getAccounts());
-  //   } catch (error) {
-  //       console.log(error);
-  //   }
-    
-  // }, []);
-  // Add account
   const onSuccess = useCallback(async (publicToken, metadata) => {
     const plaidData = {
       public_token: publicToken,

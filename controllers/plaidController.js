@@ -5,7 +5,7 @@ const client = require('../config/plaid')
 const cors = require('cors');
 // Load Account model
 const Account = require("../models/Account");
-const router = express.Router();
+
 
 
 

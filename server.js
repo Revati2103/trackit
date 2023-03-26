@@ -39,7 +39,7 @@ app.get("/api/create_link_token", async (req, res) => {
         user: { client_user_id: userId},
         client_name: "TrackIt",
         language: "en",
-        products: ["auth"],
+        products: ["transactions"],
         country_codes: ["US"],
         redirect_uri: process.env.PLAID_SANDBOX_REDIRECT_URI,
       });
@@ -56,11 +56,12 @@ app.post("/api/exchange_public_token", async (req, res) => {
       const exchangeResponse = await client.itemPublicTokenExchange({
         public_token: req.body.public_token,
       });
-      console.log({public_token: req.body.public_token});
+      console.log({exchangeresp: exchangeResponse, body: req.body})
+      //console.log({public_token: req.body.public_token});
       const accessToken = exchangeResponse.data.access_token;
       const itemId = exchangeResponse.data.item_id;
       console.log({public_token: req.body.public_token,access_token: accessToken, item_id: itemId });
-      res.json({ access_token: accessToken, item_id: itemId });
+      res.status(200).json({ access_token: accessToken, item_id: itemId });
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: 'Internal Server Error' });

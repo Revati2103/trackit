@@ -95,3 +95,4 @@ export const getTransactions = (plaidData) => (dispatch) => {
       type: TRANSACTIONS_LOADING
     };
   };
+

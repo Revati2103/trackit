@@ -1,4 +1,5 @@
-import { PlaidLink, usePlaidLink } from 'react-plaid-link';
+
+import {  PlaidLink, usePlaidLink } from 'react-plaid-link';
 import {
     getTransactions,
     addAccount,
@@ -19,16 +20,17 @@ const Accounts = ({user , accounts, publicToken}) => {
     dispatch(getTransactions(accounts));
   }, [dispatch, accounts]);
 
-  // Add account
-  const handleOnSuccess = (token, metadata) => {
-    const plaidData = {
-      public_token: publicToken,
-      metadata: metadata,
-      accounts: accounts
+ // Add account
+ const handleOnSuccess = (token, metadata) => {
+      const plaidData = {
+        public_token: token,
+        metadata: metadata,
+        accounts: accounts
+      };
+      dispatch(addAccount(plaidData));
     };
-    dispatch(addAccount(plaidData));
-  };
-
+ 
+  
   // Delete account
   const onDeleteClick = id => {
     const accountData = {
@@ -43,6 +45,39 @@ const Accounts = ({user , accounts, publicToken}) => {
     e.preventDefault();
     dispatch(logoutUser());
   };
+
+  // let isOauth = false;
+
+  // const config = {
+  //   clientName: 'TrackIt',
+  //   env: 'sandbox',
+  //   product: ['transactions'],
+  //   publicToken,
+  //   onSuccess,
+  // };
+
+  const plaidLinkProps = {
+    clientName: 'TrackIt',
+    env: 'sandbox',
+    product: ['auth', 'transactions'],
+    publicKey: publicToken,
+    onSuccess: handleOnSuccess,
+   
+  }
+
+  // For OAuth, configure the received redirect URI
+  // if (window.location.href.includes("?oauth_state_id=")) {
+  //   config.receivedRedirectUri = window.location.href;
+  //   isOauth = true;
+  // }
+  const { open, ready } = usePlaidLink(plaidLinkProps);
+
+  // useEffect(() => {
+  //   if (isOauth && ready) {
+  //     open();
+  //   }
+  // }, [isOauth, ready, open]);
+
 
   let accountItems = accounts.map(account => (
     <li key={account._id} style={{ marginTop: "1rem" }}>
@@ -103,22 +138,12 @@ const Accounts = ({user , accounts, publicToken}) => {
           Add or remove your bank accounts below
         </p>
         <ul>{accountItems}</ul>
-        <PlaidLink
-          buttonProps={{
-            className:
-              "btn btn-large waves-effect waves-light hoverable blue accent-3 main-btn"
-          }}
-          plaidLinkProps={{
-            clientName: "TrackIt",
-            key: publicToken,
-            env: "sandbox",
-            product: ["transactions"],
-            onSuccess: handleOnSuccess
-          }}
-          onScriptLoad={() => this.setState({ loaded: true })}
-        >
-          Add Account
-        </PlaidLink>
+        <PlaidLink {...plaidLinkProps}>
+            <button onClick={() => open()
+        } disabled={!ready}>
+        <strong>Add account</strong>
+      </button>
+      </PlaidLink>
         <hr style={{ marginTop: "2rem", opacity: ".2" }} />
         <h5>
           <b>Transactions</b>

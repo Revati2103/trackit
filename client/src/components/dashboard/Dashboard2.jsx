@@ -5,6 +5,8 @@ import { logoutUser } from "../../actions/authActions";
 import {  getAccounts, addAccount } from "../../actions/accountActions";
 import Accounts from "./Accounts";
 import Spinner from "./Spinner";
+import axios from "axios";
+
 
 
 const Dashboard2 = () => {
@@ -12,6 +14,7 @@ const Dashboard2 = () => {
   const { user } = useSelector((state) => state.auth);
   const { accounts, accountsLoading } = useSelector((state) => state.plaid);
   const [token, setToken] = useState(null);
+  const [publicToken, setPublicToken] = useState(null);
 
   useEffect(() => {
     dispatch(getAccounts());
@@ -24,19 +27,29 @@ const Dashboard2 = () => {
     };
 
     try {
-      await fetch("/api/exchange_public_token", {
+      const response = await fetch("/api/exchange_public_token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ public_token: publicToken }),
+       body: JSON.stringify({ public_token: publicToken}),
+   
+       
       });
+      //console.log(response);
+const data = await response.json();
+console.log({data: data.access_token});
+// Update the public token state variable
+setPublicToken(publicToken);
 
       dispatch(addAccount(plaidData));
     } catch (error) {
       console.log(error);
     }
   }, [dispatch]);
+
+
+
 
   const createLinkToken = useCallback (async () => {
     // For OAuth, use previously generated Link token
@@ -57,6 +70,14 @@ const Dashboard2 = () => {
       
     }
   }, [setToken]);
+
+  
+  
+  
+
+
+
+  
 
   let isOauth = false;
 
@@ -98,7 +119,7 @@ const Dashboard2 = () => {
     dashboardContent = <Spinner />;
   } else if (accounts.length > 0) {
     //dashboardContent = <Accounts />;
-    dashboardContent = <Accounts user={user} accounts={accounts} />;
+    dashboardContent = <Accounts user={user} accounts={accounts} publicToken={publicToken}/>;
   } else {
     dashboardContent = (
         <div className="row">

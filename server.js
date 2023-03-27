@@ -2,11 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv').config();
 const port = process.env.PORT || 5500
-const passport = require("passport");
 const userRoutes = require('./routes/userRoutes');
 const plaidRoutes = require('./routes/plaidRoutes')
 const client = require('./config/plaid')
-
+const passport = require("passport");
 const connectDB = require('./config/db')
 connectDB()
 
@@ -19,8 +18,12 @@ app.use(cors())
 
 app.use(passport.initialize());
 
+
+
 //Passport Config
 require("./config/passport")(passport);
+
+
 
 // Routes
 

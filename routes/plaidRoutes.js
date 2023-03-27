@@ -14,7 +14,8 @@ const {
 
 
   // Define the middleware to authenticate the request using passport
-const authenticate = passport.authenticate('jwt', { session: false });
+const authenticate = passport.authenticate("jwt", { session: false });
+
 
 //Routes 
 router.post("/accounts/add", authenticate, addAccount);

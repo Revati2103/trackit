@@ -20,35 +20,72 @@ const Dashboard2 = () => {
     dispatch(getAccounts());
   }, [dispatch]);
 
-  const onSuccess = useCallback(async (publicToken, metadata) => {
-    const plaidData = {
-      public_token: publicToken,
-      metadata: metadata,
-    };
+//   const onSuccess = useCallback(async (publicToken, metadata) => {
+//     const plaidData = {
+//       public_token: publicToken,
+//       metadata: metadata,
+//     };
 
-    try {
-      const response = await fetch("/api/exchange_public_token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-       body: JSON.stringify({ public_token: publicToken}),
+//     try {
+//       const response = await fetch("/api/exchange_public_token", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//        body: JSON.stringify({ public_token: publicToken}),
    
        
-      });
-      //console.log(response);
-const data = await response.json();
-console.log({data: data.access_token});
-// Update the public token state variable
-setPublicToken(publicToken);
+//       });
+//       //console.log(response);
+// const data = await response.json();
+// console.log({data: data.access_token});
+// // Update the public token state variable
+// setPublicToken(publicToken);
 
-      dispatch(addAccount(plaidData));
-    } catch (error) {
-      console.log(error);
-    }
-  }, [dispatch]);
+//       dispatch(addAccount(plaidData));
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   }, [dispatch]);
 
 
+const onSuccess = useCallback(async (publicToken, metadata) => {
+  const plaidData = {
+    public_token: publicToken,
+    metadata: metadata,
+  };
+axios
+.post("/api/exchange_public_token", {public_token: publicToken})
+.then((res) => {
+  console.log(res.data);
+  setPublicToken(publicToken);
+  dispatch(addAccount(plaidData));
+
+}).catch(err => {
+  console.log(err);
+})
+  
+}, [dispatch]);
+
+  // const createLinkToken = useCallback (async () => {
+  //   // For OAuth, use previously generated Link token
+  //   if (window.location.href.includes("?oauth_state_id=")) {
+  //     const linkToken = localStorage.getItem('link_token');
+  //     setToken(linkToken);
+  //   } else {
+  //     try{
+  //       const response = await fetch("/api/create_link_token", {});
+  //       const data = await response.json();
+  //       setToken(data.link_token);
+       
+  //       localStorage.setItem("link_token", data.link_token);
+
+  //     }catch (error) {
+  //     console.log(error);
+  //   }
+      
+  //   }
+  // }, [setToken]);
 
 
   const createLinkToken = useCallback (async () => {
@@ -57,16 +94,15 @@ setPublicToken(publicToken);
       const linkToken = localStorage.getItem('link_token');
       setToken(linkToken);
     } else {
-      try{
-        const response = await fetch("/api/create_link_token", {});
-        const data = await response.json();
-        setToken(data.link_token);
-       
-        localStorage.setItem("link_token", data.link_token);
 
-      }catch (error) {
-      console.log(error);
-    }
+      axios
+      .get("/api/create_link_token")
+      .then((res) => {
+          setToken(res.data.link_token);
+          localStorage.setItem("link_token", res.data.link_token);
+      }).catch(err => {
+          console.log(err);
+      })
       
     }
   }, [setToken]);

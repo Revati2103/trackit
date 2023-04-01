@@ -2,33 +2,25 @@
 import {  PlaidLink, usePlaidLink } from 'react-plaid-link';
 import {
     getTransactions,
+    addAccount,
     deleteAccount
 } from "../../actions/accountActions"
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from 'react';
 import { logoutUser } from "../../actions/authActions";
 import MaterialReactTable from "material-react-table";
-
+import { usePlaid } from "../../hooks/usePlaidToken";
 
 
 const Accounts = ({user , accounts, publicToken, onSuccess}) => {
   const dispatch = useDispatch();
   const { transactions, transactionsLoading } = useSelector(state => state.plaid);
-
+  const { token, setToken , open , ready } = usePlaid();
   useEffect(() => {
     dispatch(getTransactions(accounts));
   }, [dispatch, accounts]);
 
- // Add account
-//  const handleOnSuccess = (token, metadata) => {
-//       const plaidData = {
-//         public_token: token,
-//         metadata: metadata,
-//         accounts: accounts
-//       };
-
-//       dispatch(addAccount(plaidData));
-//     };
+ 
  
   
   // Delete account
@@ -46,16 +38,7 @@ const Accounts = ({user , accounts, publicToken, onSuccess}) => {
     dispatch(logoutUser());
   };
 
-  const plaidLinkProps = {
-    clientName: 'TrackIt',
-    env: 'sandbox',
-    product: ['auth', 'transactions'],
-    publicKey: publicToken,
-    onSuccess: onSuccess,
-   
-  }
-
-  const { open, ready } = usePlaidLink(plaidLinkProps);
+  
 
 
   let accountItems = accounts.map(account => (
@@ -73,7 +56,7 @@ const Accounts = ({user , accounts, publicToken, onSuccess}) => {
 
   // Setting up data table
   const transactionsColumns = [
-    {title: "Account", header: "Account", accessorKey: "account" },
+    { title: "Account", header: "Account", accessorKey: "account" },
     { title: "Date", header: "Date", accessorKey: "date", type: "date", defaultSort: "desc" },
     { title: "Name", header: "Name", accessorKey: "name" },
     { title: "Amount", header: "Amount", accessorKey: "amount", type: "numeric" },
@@ -126,12 +109,10 @@ if (transactions && Array.isArray(transactions)) {
           Add or remove your bank accounts below
         </p>
         <ul>{accountItems}</ul>
-        <PlaidLink {...plaidLinkProps}>
-            <button onClick={() => open()
+        <button onClick={() => open()
         } disabled={!ready}>
         <strong>Add account</strong>
       </button>
-      </PlaidLink>
         <hr style={{ marginTop: "2rem", opacity: ".2" }} />
         <h5>
           <b>Transactions</b>

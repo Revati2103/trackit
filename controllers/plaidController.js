@@ -19,51 +19,94 @@ var ITEM_ID = null;
 // @desc Trade a public token for access token
 // @access Private
 
-const addAccount = async(req,res) => {
-    try {
-        PUBLIC_TOKEN = req.body.public_token;
+// const addAccount = async(req,res) => {
+//     try {
+//         PUBLIC_TOKEN = req.body.public_token;
+//     console.log({Public_Token_Add: PUBLIC_TOKEN});
+//         const userId = req.user.id;
+//         console.log("User ID from addAccount is " , userId)
     
-        const userId = req.user.id;
+//         const institution = req.body.metadata.institution;
+//         const { name, institution_id } = institution;
+
+//         console.log({Name: name, InstitutionID: institution_id});
     
-        const institution = req.body.metadata.institution;
-        const { name, institution_id } = institution;
+//         if (PUBLIC_TOKEN) {
+//           client
+//             .itemPublicTokenExchange(PUBLIC_TOKEN)
+//             .then(exchangeResponse => {
+//               ACCESS_TOKEN = exchangeResponse.access_token;
+//               ITEM_ID = exchangeResponse.item_id;
+
+//               console.log({ExchangeResp: exchangeResponse})
+//               console.log({PublicToken: PUBLIC_TOKEN, AccessToken:ACCESS_TOKEN, ItemID:ITEM_ID })
     
-        if (PUBLIC_TOKEN) {
-          client
-            .itemPublicTokenExchange(PUBLIC_TOKEN)
-            .then(exchangeResponse => {
-              ACCESS_TOKEN = exchangeResponse.access_token;
-              ITEM_ID = exchangeResponse.item_id;
+//               // Check if account already exists for specific user
+//               Account.findOne({
+//                 userId: userId,
+//                 institutionId: institution_id
+//               })
+//                 .then(account => {
+//                   if (account) {
+//                     console.log("Account already exists");
+//                   } else {
+//                     const newAccount = new Account({
+//                       userId: userId,
+//                       accessToken: ACCESS_TOKEN,
+//                       itemId: ITEM_ID,
+//                       institutionId: institution_id,
+//                       institutionName: name
+//                     });
     
-              // Check if account already exists for specific user
-              Account.findOne({
-                userId: userId,
-                institutionId: institution_id
-              })
-                .then(account => {
-                  if (account) {
-                    console.log("Account already exists");
-                  } else {
-                    const newAccount = new Account({
-                      userId: userId,
-                      accessToken: ACCESS_TOKEN,
-                      itemId: ITEM_ID,
-                      institutionId: institution_id,
-                      institutionName: name
-                    });
-    
-                    newAccount.save().then(account => res.json(account));
-                  }
-                })
-                .catch(err => console.log(err)); // Mongo Error
-            })
-            .catch(err => console.log(err)); // Plaid Error
-        }
-      } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: "Internal server error" });
+//                     newAccount.save().then(account => res.json(account));
+//                   }
+//                 })
+//                 .catch(err => console.log(err)); // Mongo Error
+//             })
+//             .catch(err => console.log(err)); // Plaid Error
+//         }
+//       } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// }
+
+const addAccount = async(req, res) => {
+  try {
+    const { public_token, metadata, accessToken, item_id } = req.body;
+    const userId = req.user.id;
+    const institution = metadata.institution;
+    const { name, institution_id } = institution;
+
+    console.log({ Name: name, InstitutionID: institution_id });
+
+    // Check if account already exists for specific user
+    const account = await Account.findOne({
+      userId: userId,
+      institutionId: institution_id,
+    });
+
+    if (account) {
+      console.log("Account already exists");
+      return res.status(400).json({ error: "Account already exists" });
+    } else {
+      const newAccount = new Account({
+        userId: userId,
+        accessToken: accessToken,
+        itemId: item_id,
+        institutionId: institution_id,
+        institutionName: name,
+      });
+
+      await newAccount.save();
+      res.json(newAccount);
     }
-}
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 
 // @route DELETE api/plaid/accounts/:id
 // @desc Delete an account with the given id

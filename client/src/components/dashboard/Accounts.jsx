@@ -2,7 +2,6 @@
 import {  PlaidLink, usePlaidLink } from 'react-plaid-link';
 import {
     getTransactions,
-    addAccount,
     deleteAccount
 } from "../../actions/accountActions"
 import { useSelector, useDispatch } from "react-redux";
@@ -12,7 +11,7 @@ import MaterialReactTable from "material-react-table";
 
 
 
-const Accounts = ({user , accounts, publicToken}) => {
+const Accounts = ({user , accounts, publicToken, onSuccess}) => {
   const dispatch = useDispatch();
   const { transactions, transactionsLoading } = useSelector(state => state.plaid);
 
@@ -21,14 +20,15 @@ const Accounts = ({user , accounts, publicToken}) => {
   }, [dispatch, accounts]);
 
  // Add account
- const handleOnSuccess = (token, metadata) => {
-      const plaidData = {
-        public_token: token,
-        metadata: metadata,
-        accounts: accounts
-      };
-      dispatch(addAccount(plaidData));
-    };
+//  const handleOnSuccess = (token, metadata) => {
+//       const plaidData = {
+//         public_token: token,
+//         metadata: metadata,
+//         accounts: accounts
+//       };
+
+//       dispatch(addAccount(plaidData));
+//     };
  
   
   // Delete account
@@ -46,37 +46,16 @@ const Accounts = ({user , accounts, publicToken}) => {
     dispatch(logoutUser());
   };
 
-  // let isOauth = false;
-
-  // const config = {
-  //   clientName: 'TrackIt',
-  //   env: 'sandbox',
-  //   product: ['transactions'],
-  //   publicToken,
-  //   onSuccess,
-  // };
-
   const plaidLinkProps = {
     clientName: 'TrackIt',
     env: 'sandbox',
     product: ['auth', 'transactions'],
     publicKey: publicToken,
-    onSuccess: handleOnSuccess,
+    onSuccess: onSuccess,
    
   }
 
-  // For OAuth, configure the received redirect URI
-  // if (window.location.href.includes("?oauth_state_id=")) {
-  //   config.receivedRedirectUri = window.location.href;
-  //   isOauth = true;
-  // }
   const { open, ready } = usePlaidLink(plaidLinkProps);
-
-  // useEffect(() => {
-  //   if (isOauth && ready) {
-  //     open();
-  //   }
-  // }, [isOauth, ready, open]);
 
 
   let accountItems = accounts.map(account => (
@@ -94,25 +73,34 @@ const Accounts = ({user , accounts, publicToken}) => {
 
   // Setting up data table
   const transactionsColumns = [
-    { title: "Account", field: "account" },
-    { title: "Date", field: "date", type: "date", defaultSort: "desc" },
-    { title: "Name", field: "name" },
-    { title: "Amount", field: "amount", type: "numeric" },
-    { title: "Category", field: "category" }
+    {title: "Account", header: "Account", accessorKey: "account" },
+    { title: "Date", header: "Date", accessorKey: "date", type: "date", defaultSort: "desc" },
+    { title: "Name", header: "Name", accessorKey: "name" },
+    { title: "Amount", header: "Amount", accessorKey: "amount", type: "numeric" },
+    { title: "Category", header: "Category", accessorKey: "category" }
   ];
+  
 
-  let transactionsData = [];
-  transactions.forEach(function(account) {
-    account.transactions.forEach(function(transaction) {
-      transactionsData.push({
-        account: account.accountName,
-        date: transaction.date,
-        category: transaction.category[0],
-        name: transaction.name,
-        amount: transaction.amount
+let transactionsData = [];
+
+if (transactions && Array.isArray(transactions)) {
+  transactions.forEach(account => {
+    if (account && account.transactions && Array.isArray(account.transactions)) {
+      account.transactions.forEach(transaction => {
+        if (transaction) {
+          transactionsData.push({
+            account: account.accountName,
+            date: transaction.date,
+            category: transaction.category && transaction.category.length > 0 ? transaction.category[0] : '',
+            name: transaction.name,
+            amount: transaction.amount
+          });
+        }
       });
-    });
+    }
   });
+}
+
 
 
 

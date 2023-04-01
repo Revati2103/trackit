@@ -10,21 +10,44 @@ import {
 } from "./types";
 
 // Add account
+// export const addAccount = (plaidData) => (dispatch) => {
+//     const accounts = plaidData.accounts;
+//     axios
+//       .post("/api/plaid/accounts/add", plaidData)
+//       .then(res =>
+//         dispatch({
+//           type: ADD_ACCOUNT,
+//           payload: res.data
+//         })
+//       )
+//       .then(data =>
+//         accounts ? dispatch(getTransactions(accounts.concat(data.payload))) : null
+//       )
+//       .catch(err => console.log(err));
+//   };
+
 export const addAccount = (plaidData) => (dispatch) => {
-    const accounts = plaidData.accounts;
-    axios
-      .post("/api/plaid/accounts/add", plaidData)
-      .then(res =>
-        dispatch({
-          type: ADD_ACCOUNT,
-          payload: res.data
-        })
-      )
-      .then(data =>
-        accounts ? dispatch(getTransactions(accounts.concat(data.payload))) : null
-      )
-      .catch(err => console.log(err));
-  };
+  const accounts = plaidData.accounts;
+  axios
+    .post("/api/plaid/accounts/add", plaidData)
+    .then((res) => {
+      dispatch({
+        type: ADD_ACCOUNT,
+        payload: res.data,
+      });
+      if (res.data.access_token && res.data.item_id) {
+        plaidData.access_token = res.data.access_token;
+        plaidData.item_id = res.data.item_id;
+      }
+      if (accounts) {
+        dispatch(getTransactions(accounts.concat(res.data)));
+      }
+    })
+    .catch((err) => console.log(err));
+};
+
+
+
 
   // Delete account
 export const deleteAccount = (plaidData) => (dispatch) => {

@@ -7,12 +7,15 @@ import Accounts from "./Accounts";
 import Spinner from "./Spinner";
 import axios from "axios";
 
-
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const Dashboard2 = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { accounts, accountsLoading } = useSelector((state) => state.plaid);
+ // const { accounts, accountsLoading } = useSelector((state) => state.plaid);
+  const accounts = useSelector(state => state.plaid.accounts);
+  const accountsLoading = useSelector(state => state.plaid.accountsLoading);
+
   const [token, setToken] = useState(null);
   const [publicToken, setPublicToken] = useState(null);
 
@@ -20,73 +23,35 @@ const Dashboard2 = () => {
     dispatch(getAccounts());
   }, [dispatch]);
 
-//   const onSuccess = useCallback(async (publicToken, metadata) => {
-//     const plaidData = {
-//       public_token: publicToken,
-//       metadata: metadata,
-//     };
-
-//     try {
-//       const response = await fetch("/api/exchange_public_token", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//        body: JSON.stringify({ public_token: publicToken}),
-   
-       
-//       });
-//       //console.log(response);
-// const data = await response.json();
-// console.log({data: data.access_token});
-// // Update the public token state variable
-// setPublicToken(publicToken);
-
-//       dispatch(addAccount(plaidData));
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   }, [dispatch]);
-
-
 const onSuccess = useCallback(async (publicToken, metadata) => {
   const plaidData = {
     public_token: publicToken,
     metadata: metadata,
   };
 axios
-.post("/api/exchange_public_token", {public_token: publicToken})
+.post("/api/exchange_public_token",  JSON.stringify({ public_token: publicToken, metadata }), {
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+})
 .then((res) => {
-  console.log(res.data);
-  setPublicToken(publicToken);
-  dispatch(addAccount(plaidData));
+  console.log("Data:", res.data);
+  JSON.stringify(res.data);
+  setPublicToken(JSON.stringify(publicToken));
+ plaidData.accessToken = res.data.access_token;
+ plaidData.item_id = res.data.item_id
+ console.log("Plaid Data: ", plaidData);
+ console.log("Stringified Plaid Data :", JSON.stringify(plaidData))
+  dispatch(addAccount((plaidData)));
 
 }).catch(err => {
   console.log(err);
 })
+
+
   
 }, [dispatch]);
-
-  // const createLinkToken = useCallback (async () => {
-  //   // For OAuth, use previously generated Link token
-  //   if (window.location.href.includes("?oauth_state_id=")) {
-  //     const linkToken = localStorage.getItem('link_token');
-  //     setToken(linkToken);
-  //   } else {
-  //     try{
-  //       const response = await fetch("/api/create_link_token", {});
-  //       const data = await response.json();
-  //       setToken(data.link_token);
-       
-  //       localStorage.setItem("link_token", data.link_token);
-
-  //     }catch (error) {
-  //     console.log(error);
-  //   }
-      
-  //   }
-  // }, [setToken]);
-
 
   const createLinkToken = useCallback (async () => {
     // For OAuth, use previously generated Link token
@@ -98,6 +63,7 @@ axios
       axios
       .get("/api/create_link_token")
       .then((res) => {
+        JSON.stringify(res.data);
           setToken(res.data.link_token);
           localStorage.setItem("link_token", res.data.link_token);
       }).catch(err => {
@@ -107,13 +73,6 @@ axios
     }
   }, [setToken]);
 
-  
-  
-  
-
-
-
-  
 
   let isOauth = false;
 
@@ -146,16 +105,13 @@ axios
   };
 
  
-
-
-
   let dashboardContent;
 
   if (accounts === null || accountsLoading) {
     dashboardContent = <Spinner />;
   } else if (accounts.length > 0) {
     //dashboardContent = <Accounts />;
-    dashboardContent = <Accounts user={user} accounts={accounts} publicToken={publicToken}/>;
+    dashboardContent = <Accounts user={user} accounts={accounts} publicToken={publicToken} onSuccess={onSuccess}/>;
   } else {
     dashboardContent = (
         <div className="row">

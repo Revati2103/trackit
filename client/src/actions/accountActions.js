@@ -9,9 +9,33 @@ import {
   TRANSACTIONS_LOADING
 } from "./types";
 
-// Add account
+//Add account
+
+export const addAccount = (plaidData) => async (dispatch) => {
+  try {
+    const accounts = plaidData.metadata.accounts;
+    const response = await axios.post("/api/plaid/accounts/add", plaidData);
+    const data = response.data;
+    dispatch({
+      type: ADD_ACCOUNT,
+      payload: data,
+    });
+    if (accounts) {
+      const transactionResponse = await axios.post("/api/plaid/accounts/transactions", accounts);
+      const transactions = transactionResponse.data;
+      dispatch({
+        type: GET_TRANSACTIONS,
+        payload: transactions,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // export const addAccount = (plaidData) => (dispatch) => {
-//     const accounts = plaidData.accounts;
+//     const accounts = plaidData.metadata.accounts;
+//     console.log("Accounts from addAccount:", accounts)
 //     axios
 //       .post("/api/plaid/accounts/add", plaidData)
 //       .then(res =>
@@ -26,25 +50,27 @@ import {
 //       .catch(err => console.log(err));
 //   };
 
-export const addAccount = (plaidData) => (dispatch) => {
-  const accounts = plaidData.accounts;
-  axios
-    .post("/api/plaid/accounts/add", plaidData)
-    .then((res) => {
-      dispatch({
-        type: ADD_ACCOUNT,
-        payload: res.data,
-      });
-      if (res.data.access_token && res.data.item_id) {
-        plaidData.access_token = res.data.access_token;
-        plaidData.item_id = res.data.item_id;
-      }
-      if (accounts) {
-        dispatch(getTransactions(accounts.concat(res.data)));
-      }
-    })
-    .catch((err) => console.log(err));
-};
+
+// export const addAccount = (plaidData) => (dispatch) => {
+//   const accounts = plaidData.metadata.accounts;
+//   console.log("Accounts from addAccount:", accounts);
+//   axios
+//     .post("/api/plaid/accounts/add", plaidData)
+//     .then(res => {
+//       dispatch({
+//         type: ADD_ACCOUNT,
+//         payload: res.data
+//       });
+//       return res.data;
+//     })
+//     .then(data => {
+//       const accountIds = Array.isArray(data) 
+//? data.map(account => account.id)
+//         : [data.id];
+//       dispatch(getTransactions(accountIds));
+//     })
+//     .catch(err => console.log(err));
+// };
 
 
 

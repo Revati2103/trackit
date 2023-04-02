@@ -145,41 +145,78 @@ const getAllAccounts = async(req,res) => {
 // @desc Fetch transactions for past 30 days from all linked accounts
 // @access Private
 
-const getTransactions = async(req,res) => {
-    try {
-        const now = moment();
-        const today = now.format("YYYY-MM-DD");
-        const thirtyDaysAgo = now.subtract(30, "days").format("YYYY-MM-DD");
+// const getTransactions = async(req,res) => {
+//     try {
+//         const now = moment();
+//         const today = now.format("YYYY-MM-DD");
+//         const thirtyDaysAgo = now.subtract(30, "days").format("YYYY-MM-DD");
     
-        let transactions = [];
+//         let transactions = [];
     
-        const accounts = req.body;
+//         const accounts = req.body;
     
-        if (accounts) {
-          accounts.forEach(function(account) {
-            ACCESS_TOKEN = account.accessToken;
-            const institutionName = account.institutionName;
+//         if (accounts) {
+//           accounts.forEach(function(account) {
+//             ACCESS_TOKEN = account.accessToken;
+//             const institutionName = account.institutionName;
     
-            client
-              .transactionsGet(ACCESS_TOKEN, thirtyDaysAgo, today)
-              .then(response => {
-                transactions.push({
-                  accountName: institutionName,
-                  transactions: response.transactions
-                });
+//             client
+//               .transactionsGet(ACCESS_TOKEN, thirtyDaysAgo, today)
+//               .then(response => {
+//                 transactions.push({
+//                   accountName: institutionName,
+//                   transactions: response.transactions
+//                 });
     
-                if (transactions.length === accounts.length) {
-                  res.json(transactions);
-                }
-              })
-              .catch(err => console.log(err));
-          });
-        }
-      } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: "Internal server error" });
+//                 if (transactions.length === accounts.length) {
+//                   res.json(transactions);
+//                 }
+//               })
+//               .catch(err => console.log(err));
+//           });
+//         }
+//       } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// }
+
+const getTransactions = async (req, res) => {
+  try {
+    const now = moment();
+    const today = now.format("YYYY-MM-DD");
+    const thirtyDaysAgo = now.subtract(30, "days").format("YYYY-MM-DD");
+
+    let transactions = [];
+
+    const { accounts } = req.body; // access the accounts data from the request body
+
+    if (accounts) {
+      accounts.forEach(function (account) {
+        ACCESS_TOKEN = account.accessToken;
+        const institutionName = account.institutionName;
+
+        client
+          .transactionsGet(ACCESS_TOKEN, thirtyDaysAgo, today)
+          .then((response) => {
+            transactions.push({
+              accountName: institutionName,
+              transactions: response.transactions,
+            });
+
+            if (transactions.length === accounts.length) {
+              res.json(transactions);
+            }
+          })
+          .catch((err) => console.log(err));
+      });
     }
-}
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 
 
 module.exports = {

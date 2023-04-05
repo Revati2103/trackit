@@ -1,75 +1,12 @@
 
 const moment = require("moment");
-const express = require("express");
 const client = require('../config/plaid')
-const cors = require('cors');
 // Load Account model
 const Account = require("../models/Account");
-
-
-
-
-var PUBLIC_TOKEN = null;
-var ACCESS_TOKEN = null;
-var ITEM_ID = null;
-
-
 
 // @route POST api/plaid/accounts/add
 // @desc Trade a public token for access token
 // @access Private
-
-// const addAccount = async(req,res) => {
-//     try {
-//         PUBLIC_TOKEN = req.body.public_token;
-//     console.log({Public_Token_Add: PUBLIC_TOKEN});
-//         const userId = req.user.id;
-//         console.log("User ID from addAccount is " , userId)
-    
-//         const institution = req.body.metadata.institution;
-//         const { name, institution_id } = institution;
-
-//         console.log({Name: name, InstitutionID: institution_id});
-    
-//         if (PUBLIC_TOKEN) {
-//           client
-//             .itemPublicTokenExchange(PUBLIC_TOKEN)
-//             .then(exchangeResponse => {
-//               ACCESS_TOKEN = exchangeResponse.access_token;
-//               ITEM_ID = exchangeResponse.item_id;
-
-//               console.log({ExchangeResp: exchangeResponse})
-//               console.log({PublicToken: PUBLIC_TOKEN, AccessToken:ACCESS_TOKEN, ItemID:ITEM_ID })
-    
-//               // Check if account already exists for specific user
-//               Account.findOne({
-//                 userId: userId,
-//                 institutionId: institution_id
-//               })
-//                 .then(account => {
-//                   if (account) {
-//                     console.log("Account already exists");
-//                   } else {
-//                     const newAccount = new Account({
-//                       userId: userId,
-//                       accessToken: ACCESS_TOKEN,
-//                       itemId: ITEM_ID,
-//                       institutionId: institution_id,
-//                       institutionName: name
-//                     });
-    
-//                     newAccount.save().then(account => res.json(account));
-//                   }
-//                 })
-//                 .catch(err => console.log(err)); // Mongo Error
-//             })
-//             .catch(err => console.log(err)); // Plaid Error
-//         }
-//       } catch (error) {
-//         console.log(error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// }
 
 const addAccount = async(req, res) => {
   try {
@@ -146,81 +83,6 @@ const getAllAccounts = async(req,res) => {
 // @route POST api/plaid/accounts/transactions
 // @desc Fetch transactions for past 30 days from all linked accounts
 // @access Private
-
-// const getTransactions = async(req,res) => {
-//     try {
-//         const now = moment();
-//         const today = now.format("YYYY-MM-DD");
-//         const thirtyDaysAgo = now.subtract(30, "days").format("YYYY-MM-DD");
-    
-//         let transactions = [];
-    
-//         const accounts = req.body;
-    
-//         if (accounts) {
-//           accounts.forEach(function(account) {
-//             ACCESS_TOKEN = account.accessToken;
-//             const institutionName = account.institutionName;
-    
-//             client
-//               .transactionsGet(ACCESS_TOKEN, thirtyDaysAgo, today)
-//               .then(response => {
-//                 transactions.push({
-//                   accountName: institutionName,
-//                   transactions: response.transactions
-//                 });
-    
-//                 if (transactions.length === accounts.length) {
-//                   res.json(transactions);
-//                 }
-//               })
-//               .catch(err => console.log(err));
-//           });
-//         }
-//       } catch (error) {
-//         console.log(error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// }
-
-// const getTransactions = async (req, res) => {
-//   try {
-//     const now = moment();
-//     const today = now.format("YYYY-MM-DD");
-//     const thirtyDaysAgo = now.subtract(30, "days").format("YYYY-MM-DD");
-
-//     let transactions = [];
-
-//     const accounts = req.body;
-//     console.log("Request body from transactions controller", req.body);
-
-//     if (accounts) {
-//       for (let account of accounts) {
-//         const ACCESS_TOKEN = account.accessToken;
-//         const institutionName = account.institutionName;
-
-//         try {
-//           const response = await client.transactionsGet(
-//             ACCESS_TOKEN,
-//             thirtyDaysAgo,
-//             today
-//           );
-//           transactions.push({
-//             accountName: institutionName,
-//             transactions: response.transactions,
-//           });
-//         } catch (error) {
-//           console.log(error);
-//         }
-//       }
-
-//       res.json(transactions);
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// };
 
 const getTransactions = async (req, res) => {
   try {

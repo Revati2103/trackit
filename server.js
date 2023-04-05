@@ -1,11 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv').config();
 const port = process.env.PORT || 5500
 const userRoutes = require('./routes/userRoutes');
 const plaidRoutes = require('./routes/plaidRoutes')
 const client = require('./config/plaid')
-const Account = require('./models/Account')
 const jwt = require('jsonwebtoken');
 const passport = require("passport");
 const connectDB = require('./config/db')
@@ -48,11 +46,11 @@ app.use("/api/plaid", plaidRoutes);
 
 
 
-//Create and exchange a public token
+
 
 // Creates a Link token and returns it
 app.get("/api/create_link_token", extractUserId, async (req, res) => {
-    //const userId = 'user-id'
+
     try {
       const { userId } = req;
       console.log("user:", userId);
@@ -71,8 +69,10 @@ app.get("/api/create_link_token", extractUserId, async (req, res) => {
         res.status(500).json({ err: "An error occurred while creating the link token" });
     }
   });
-  
-app.post("/api/exchange_public_token", extractUserId, async (req, res) => {
+
+  //Create and exchange a public token
+
+  app.post("/api/exchange_public_token", extractUserId, async (req, res) => {
     try {
       const exchangeResponse = await client.itemPublicTokenExchange({
         public_token: req.body.public_token,

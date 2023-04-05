@@ -13,7 +13,7 @@ const Dashboard2 = () => {
  const { accounts, accountsLoading } = useSelector((state) => state.plaid);
  const { ready , open} = usePlaid();
 
-
+console.log('Accounts from state', accounts);
   useEffect(() => {
     dispatch(getAccounts());
   }, [dispatch]);

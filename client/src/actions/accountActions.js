@@ -11,68 +11,56 @@ import {
 
 //Add account
 
-export const addAccount = (plaidData) => async (dispatch) => {
-  try {
-    const accounts = plaidData.metadata.accounts;
-    const response = await axios.post("/api/plaid/accounts/add", plaidData);
-    const data = response.data;
-    dispatch({
-      type: ADD_ACCOUNT,
-      payload: data,
-    });
-    if (accounts) {
-      const transactionResponse = await axios.post("/api/plaid/accounts/transactions", accounts);
-      const transactions = transactionResponse.data;
-      dispatch({
-        type: GET_TRANSACTIONS,
-        payload: transactions,
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// export const addAccount = (plaidData) => (dispatch) => {
-//     const accounts = plaidData.metadata.accounts;
-//     console.log("Accounts from addAccount:", accounts)
-//     axios
-//       .post("/api/plaid/accounts/add", plaidData)
-//       .then(res =>
-//         dispatch({
-//           type: ADD_ACCOUNT,
-//           payload: res.data
-//         })
-//       )
-//       .then(data =>
-//         accounts ? dispatch(getTransactions(accounts.concat(data.payload))) : null
-//       )
-//       .catch(err => console.log(err));
-//   };
-
-
-// export const addAccount = (plaidData) => (dispatch) => {
-//   const accounts = plaidData.metadata.accounts;
-//   console.log("Accounts from addAccount:", accounts);
+// export const addAccount = plaidData => dispatch => {
+//   const accounts = plaidData.accounts;
 //   axios
-//     .post("/api/plaid/accounts/add", plaidData)
-//     .then(res => {
-//       dispatch({
+//     .post("/api/plaid/accounts/add", JSON.stringify(plaidData),
+//     {
+//       headers: {
+//         Accept: "application/json",
+//         "Content-Type": "application/json",
+//       },
+//     })
+//     .then((res) =>
+//       {
+//         JSON.stringify(res.data);
+//         dispatch({
 //         type: ADD_ACCOUNT,
 //         payload: res.data
-//       });
-//       return res.data;
-//     })
-//     .then(data => {
-//       const accountIds = Array.isArray(data) 
-//? data.map(account => account.id)
-//         : [data.id];
-//       dispatch(getTransactions(accountIds));
-//     })
+
+//       })}
+//     )
+//     .then((data) =>
+//       {
+//         console.log(data);
+//         // eslint-disable-next-line no-unused-expressions
+//         accounts ? dispatch(getTransactions(accounts.concat(data.payload))) : null
+      
+//       }
+//     )
 //     .catch(err => console.log(err));
 // };
 
-
+export const addAccount = (plaidData) => (dispatch) => {
+  const accounts = plaidData.accounts;
+  console.log('PlaidData from addAccounts action', plaidData);
+  console.log("Accounts from addAccount:", accounts)
+  axios
+    .post("/api/plaid/accounts/add", plaidData)
+    .then(res =>
+      dispatch({
+        type: ADD_ACCOUNT,
+        payload: res.data
+      })
+    )
+    .then(data =>
+      accounts ? dispatch(getTransactions(accounts.concat(data.payload))) : null
+    )
+    .catch(error => {
+      console.log(error);
+      // handle error
+    });
+};
 
 
   // Delete account
@@ -138,6 +126,8 @@ export const getTransactions = (plaidData) => (dispatch) => {
         })
       );
   };
+
+
   // Transactions loading
   export const setTransactionsLoading = () => {
     return {

@@ -77,7 +77,7 @@ app.post("/api/exchange_public_token", extractUserId, async (req, res) => {
       const exchangeResponse = await client.itemPublicTokenExchange({
         public_token: req.body.public_token,
       });
-      //console.log({exchangeresp: exchangeResponse, body: req.body})
+      console.log({exchangeresp: exchangeResponse, body: req.body})
       console.log("Body:", req.body)
       //console.log({public_token: req.body.public_token});
       const accessToken = exchangeResponse.data.access_token;

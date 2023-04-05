@@ -90,6 +90,8 @@ export const usePlaid = () => {
       setToken,
       ready,
       open,
+      onSuccess,
+      config
     };
   };
   

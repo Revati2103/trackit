@@ -73,7 +73,9 @@ var ITEM_ID = null;
 
 const addAccount = async(req, res) => {
   try {
+    console.log("Request body from addAccount controller", req.body)
     const { public_token, metadata, accessToken, item_id } = req.body;
+    console.log('Access Token from addAccount controller:', accessToken);
     const userId = req.user.id;
     const institution = metadata.institution;
     const { name, institution_id } = institution;
@@ -181,41 +183,90 @@ const getAllAccounts = async(req,res) => {
 //     }
 // }
 
+// const getTransactions = async (req, res) => {
+//   try {
+//     const now = moment();
+//     const today = now.format("YYYY-MM-DD");
+//     const thirtyDaysAgo = now.subtract(30, "days").format("YYYY-MM-DD");
+
+//     let transactions = [];
+
+//     const accounts = req.body;
+//     console.log("Request body from transactions controller", req.body);
+
+//     if (accounts) {
+//       for (let account of accounts) {
+//         const ACCESS_TOKEN = account.accessToken;
+//         const institutionName = account.institutionName;
+
+//         try {
+//           const response = await client.transactionsGet(
+//             ACCESS_TOKEN,
+//             thirtyDaysAgo,
+//             today
+//           );
+//           transactions.push({
+//             accountName: institutionName,
+//             transactions: response.transactions,
+//           });
+//         } catch (error) {
+//           console.log(error);
+//         }
+//       }
+
+//       res.json(transactions);
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// };
+
 const getTransactions = async (req, res) => {
   try {
     const now = moment();
     const today = now.format("YYYY-MM-DD");
     const thirtyDaysAgo = now.subtract(30, "days").format("YYYY-MM-DD");
 
-    let transactions = [];
+    const accounts = req.body;
+    console.log("Request body from transactions controller", accounts);
 
-    const { accounts } = req.body; // access the accounts data from the request body
+    const transactions = await Promise.all(
+      accounts.map(async (account) => {
+        const { accessToken, institutionName } = account;
+        const request = {
+          access_token: accessToken,
+          start_date: thirtyDaysAgo,
+          end_date: today,
+        };
 
-    if (accounts) {
-      accounts.forEach(function (account) {
-        ACCESS_TOKEN = account.accessToken;
-        const institutionName = account.institutionName;
+        try {
+          let transactions = [];
+          let response = await client.transactionsGet(request);
 
-        client
-          .transactionsGet(ACCESS_TOKEN, thirtyDaysAgo, today)
-          .then((response) => {
-            transactions.push({
-              accountName: institutionName,
-              transactions: response.transactions,
-            });
+          // Handle pagination
+          while (response.data["transactions"].length < response.data["total_transactions"]) {
+            request["options"] = { offset: response.data["transactions"].length };
+            response = await client.transactions.get(request);
+            transactions = transactions.concat(response.data["transactions"]);
+          }
+          transactions = transactions.concat(response.data["transactions"]);
 
-            if (transactions.length === accounts.length) {
-              res.json(transactions);
-            }
-          })
-          .catch((err) => console.log(err));
-      });
-    }
+          return { accountName: institutionName, transactions };
+        } catch (error) {
+          console.log(error);
+          throw error;
+        }
+      })
+    );
+
+    res.json(transactions);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 
 

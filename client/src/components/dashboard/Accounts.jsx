@@ -1,28 +1,66 @@
 
-import {  PlaidLink, usePlaidLink } from 'react-plaid-link';
+import { usePlaidLink } from 'react-plaid-link';
 import {
     getTransactions,
     addAccount,
     deleteAccount
 } from "../../actions/accountActions"
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { logoutUser } from "../../actions/authActions";
 import MaterialReactTable from "material-react-table";
 import { usePlaid } from "../../hooks/usePlaidToken";
+import axios from 'axios';
 
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-const Accounts = ({user , accounts, publicToken, onSuccess}) => {
+const Accounts = ({user , accounts}) => {
   const dispatch = useDispatch();
   const { transactions, transactionsLoading } = useSelector(state => state.plaid);
-  const { token, setToken , open , ready } = usePlaid();
+  const { token } = usePlaid();
   useEffect(() => {
     dispatch(getTransactions(accounts));
   }, [dispatch, accounts]);
 
  
- 
+  const onSuccess = useCallback(async (publicToken, metadata) => {
+    const plaidData = {
+      public_token: publicToken,
+      metadata: metadata,
+      accounts: accounts
+    };
+    axios
+      .post(
+        "/api/exchange_public_token",
+        JSON.stringify({ public_token: publicToken, metadata }),
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        console.log("Data:", res.data);
+        JSON.stringify(res.data);
+        plaidData.accessToken = res.data.access_token;
+        plaidData.item_id = res.data.item_id;
+        console.log("Plaid Data: ", plaidData);
+        console.log("Stringified Plaid Data :", JSON.stringify(plaidData));
+        dispatch(addAccount(plaidData));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [dispatch]);
   
+  const config = {
+    token,
+    onSuccess,
+  };
+
+  const { open, ready } = usePlaidLink(config);
+
   // Delete account
   const onDeleteClick = id => {
     const accountData = {

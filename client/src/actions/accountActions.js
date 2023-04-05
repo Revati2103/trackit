@@ -11,36 +11,6 @@ import {
 
 //Add account
 
-// export const addAccount = plaidData => dispatch => {
-//   const accounts = plaidData.accounts;
-//   axios
-//     .post("/api/plaid/accounts/add", JSON.stringify(plaidData),
-//     {
-//       headers: {
-//         Accept: "application/json",
-//         "Content-Type": "application/json",
-//       },
-//     })
-//     .then((res) =>
-//       {
-//         JSON.stringify(res.data);
-//         dispatch({
-//         type: ADD_ACCOUNT,
-//         payload: res.data
-
-//       })}
-//     )
-//     .then((data) =>
-//       {
-//         console.log(data);
-//         // eslint-disable-next-line no-unused-expressions
-//         accounts ? dispatch(getTransactions(accounts.concat(data.payload))) : null
-      
-//       }
-//     )
-//     .catch(err => console.log(err));
-// };
-
 export const addAccount = (plaidData) => (dispatch) => {
   const accounts = plaidData.accounts;
   console.log('PlaidData from addAccounts action', plaidData);

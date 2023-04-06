@@ -11,24 +11,32 @@ const Chart = () => {
     console.log("Transactions from Chart.js component",transactions);
   
     const categoryData = {};
-
+  
 transactions.forEach((account) => {
-  account.transactions.forEach((transaction) => {
-    const categories = transaction.category ? transaction.category[0] : [];
-    const category = categories[0];
-    if (categoryData[category]) {
-      categoryData[category] += transaction.amount;
-    } else {
-      categoryData[category] = transaction.amount;
-    }
+    account.transactions.forEach((transaction) => {
+      console.log("Transaction from chart loop",transaction);
+      const categories = transaction.category ? transaction.category : [];
+      console.log("Categories from chart loop",categories);
+      categories.forEach((category) => {
+        if (category) {
+          if (categoryData[category]) {
+            categoryData[category] += transaction.amount;
+          } else {
+            categoryData[category] = transaction.amount;
+          }
+        }
+      });
+    });
   });
-});
+  
 
-console.log("Category data from",categoryData);
+console.log(Object.keys(categoryData));
+console.log(Object.values(categoryData));
     const data = {
       labels: Object.keys(categoryData),
       datasets: [
         {
+          label: '$',
           data: Object.values(categoryData),
           backgroundColor: [
             '#FF6384',
@@ -49,14 +57,13 @@ console.log("Category data from",categoryData);
       }
       
       
- 
-  
+
     return (
       <div>
        <h5>
           <b>Transactions by Category</b>
         </h5>
-        <div style={{ top: '100px', right: '20px',maxWidth: '100%', height: 'auto' , zIndex: 1 }}>
+        <div style=   {{ width: '65%', height: '70vh', margin: '0 auto' }} >
             <Doughnut data={data} options={options}/>
         </div>
       </div>

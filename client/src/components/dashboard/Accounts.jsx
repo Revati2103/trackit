@@ -11,6 +11,7 @@ import { logoutUser } from "../../actions/authActions";
 import MaterialReactTable from "material-react-table";
 import { usePlaid } from "../../hooks/usePlaidToken";
 import axios from 'axios';
+import Chart from './Charts';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
@@ -126,35 +127,35 @@ if (transactions && Array.isArray(transactions)) {
 
 
   return (
-    <div className="row">
-      <div className="col s12">
-        <button
-          onClick={onLogoutClick}
-          className="btn-flat waves-effect"
-        >
+    <div>
+      <div className="row">
+      <div className="col s12 m6">
+    
+        <button onClick={onLogoutClick} className="btn-flat waves-effect">
           <i className="material-icons left">keyboard_backspace</i> Log Out
         </button>
-        <h4>
-          <b>Welcome!</b>
-        </h4>
+        <h4><b>Welcome!</b></h4>
         <p className="grey-text text-darken-1">
           Hey there, {user.name.split(" ")[0]}
         </p>
-        <h5>
-          <b>Linked Accounts</b>
-        </h5>
+        <h5><b>Linked Accounts</b></h5>
         <p className="grey-text text-darken-1">
           Add or remove your bank accounts below
         </p>
         <ul>{accountItems}</ul>
-        <button onClick={() => open()
-        } disabled={!ready}>
-        <strong>Add account</strong>
-      </button>
-        <hr style={{ marginTop: "2rem", opacity: ".2" }} />
-        <h5>
-          <b>Transactions</b>
-        </h5>
+        <button onClick={() => open()} disabled={!ready}>
+          <strong>Add account</strong>
+        </button>
+      </div>
+      <div className="col s12 m6" >
+      
+        <Chart />
+      </div>
+        </div>
+        <div className="row">
+      <div className="col s12">
+
+        <h5><b>Transactions</b></h5>
         {transactionsLoading ? (
           <p className="grey-text text-darken-1">Fetching transactions...</p>
         ) : (
@@ -177,7 +178,9 @@ if (transactions && Array.isArray(transactions)) {
           </>
         )}
       </div>
+        </div>
     </div>
+  
   );
 }
 

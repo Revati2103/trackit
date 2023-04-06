@@ -33,8 +33,8 @@ export const usePlaid = () => {
           JSON.stringify(res.data);
           plaidData.accessToken = res.data.access_token;
           plaidData.item_id = res.data.item_id;
-          console.log("Plaid Data: ", plaidData);
-          console.log("Stringified Plaid Data :", JSON.stringify(plaidData));
+          // console.log("Plaid Data: ", plaidData);
+          // console.log("Stringified Plaid Data :", JSON.stringify(plaidData));
           dispatch(addAccount(plaidData));
         })
         .catch((err) => {

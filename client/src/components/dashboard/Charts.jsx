@@ -54,7 +54,17 @@ console.log(Object.values(categoryData));
     const options = {
         responsive: true,
         maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              usePointStyle: true,
+              pointStyle: 'rect'
+            }
+          }
+        }
       }
+      
       
       
 

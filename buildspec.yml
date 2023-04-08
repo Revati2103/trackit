@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+    commands:
+      # Install dependencies for server-side code
+      - npm install
+      # Install dependencies for client-side code
+      - cd client && npm install
+  build:
+    commands:
+      # Build client-side code
+      - cd client && npm run build
+  artifacts:
+    files:
+      # Include server-side code
+      - '**/*'
+      # Include built client-side code
+      - 'client_directory/build/**/*'

@@ -13,7 +13,7 @@ phases:
       - npm run build
   post_build:
     commands:
-      - aws s3 cp --recursive ./build s3://codepipeline-us-west-2-983117758355/Trackit/
+      - aws s3 cp --recursive /build s3://codepipeline-us-west-2-983117758355/Trackit/
 
 artifacts:
   files:

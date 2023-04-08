@@ -10,10 +10,10 @@ phases:
   build:
     commands:
       # Build client-side code
-      - cd client && npm run build
+      - npm run build
   post_build:
     commands:
-      - aws s3 cp --recursive ./build s3://codepipeline-us-west-2-983117758355/Trackit/
+      - aws s3 cp --recursive ./client/build s3://codepipeline-us-west-2-983117758355/Trackit/
 
 
   

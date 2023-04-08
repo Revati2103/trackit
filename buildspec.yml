@@ -11,4 +11,11 @@ phases:
     commands:
       # Build client-side code
       - cd client && npm run build
+artifacts:
+  type: zip
+  files:
+    - '**/*'
+  name: trackit-project-build
+  discard-paths: yes
+  location: codepipeline-us-west-2-983117758355
   

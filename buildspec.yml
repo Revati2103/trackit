@@ -11,9 +11,4 @@ phases:
     commands:
       # Build client-side code
       - cd client && npm run build
-  artifacts:
-    files:
-      # Include server-side code
-      - '**/*'
-      # Include built client-side code
-      - 'client/build/**/*'
+  

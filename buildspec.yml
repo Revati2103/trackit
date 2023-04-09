@@ -5,16 +5,15 @@ phases:
     commands:
       # Install dependencies for server-side code
       - npm install
-      - npm install -g concurrently
       # Install dependencies for client-side code
-      - cd client && npm install 
+      - npm run client-install
   build:
     commands:
       # Build client-side code
-      - npm run build
+      - npm run client-build
   post_build:
     commands:
-     - if [ -d "client/build" ]; then aws s3 cp --recursive client/build s3://codepipeline-us-west-2-983117758355/Trackit/; fi
+     - aws s3 cp --recursive client/build s3://codepipeline-us-west-2-983117758355/Trackit/;
     
 
 artifacts:

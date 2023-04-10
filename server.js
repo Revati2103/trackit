@@ -18,6 +18,9 @@ app.use(cors())
 
 app.use(passport.initialize());
 
+// Serve static files from the build directory
+app.use(express.static(path.join(__dirname, 'client/build')));
+
 // Middleware function to extract user ID from JWT token
 const extractUserId = (req, res, next) => {
   const authHeader = req.headers.authorization;

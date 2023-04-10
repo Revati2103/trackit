@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const port = process.env.PORT || 5500
 const userRoutes = require('./routes/userRoutes');
 const plaidRoutes = require('./routes/plaidRoutes')
@@ -19,7 +20,7 @@ app.use(cors())
 app.use(passport.initialize());
 
 // Serve static files from the build directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'client/build')));
 
 
 

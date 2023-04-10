@@ -11,13 +11,10 @@ phases:
     commands:
       # Build client-side code
       - npm run client-build
-  post_build:
-    commands:
-     - aws s3 cp --recursive ./client/build s3://codepipeline-us-west-2-983117758355/Trackit;
     
-
 artifacts:
   files:
     - '**/*'
+  discard-paths: no  
   base-directory: ./client/build
   

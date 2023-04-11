@@ -13,8 +13,6 @@ import {
 
 export const addAccount = (plaidData) => (dispatch) => {
   const accounts = plaidData.accounts;
-  console.log('PlaidData from addAccounts action', plaidData);
-  console.log("Accounts from addAccount:", accounts)
   axios
     .post("/api/plaid/accounts/add", plaidData)
     .then(res =>

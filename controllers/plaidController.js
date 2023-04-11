@@ -10,14 +10,11 @@ const Account = require("../models/Account");
 
 const addAccount = async(req, res) => {
   try {
-    console.log("Request body from addAccount controller", req.body)
+   
     const { public_token, metadata, accessToken, item_id } = req.body;
-    console.log('Access Token from addAccount controller:', accessToken);
     const userId = req.user.id;
     const institution = metadata.institution;
     const { name, institution_id } = institution;
-
-    console.log({ Name: name, InstitutionID: institution_id });
 
     // Check if account already exists for specific user
     const account = await Account.findOne({
@@ -26,7 +23,6 @@ const addAccount = async(req, res) => {
     });
 
     if (account) {
-      console.log("Account already exists");
       return res.status(400).json({ error: "Account already exists" });
     } else {
       const newAccount = new Account({
@@ -91,7 +87,6 @@ const getTransactions = async (req, res) => {
     const thirtyDaysAgo = now.subtract(30, "days").format("YYYY-MM-DD");
 
     const accounts = req.body;
-    console.log("Request body from transactions controller", accounts);
 
     const transactions = await Promise.all(
       accounts.map(async (account) => {

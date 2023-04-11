@@ -8,15 +8,12 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const Chart = () => {
   
     const { transactions } = useSelector((state) => state.plaid);
-    console.log("Transactions from Chart.js component",transactions);
-  
     const categoryData = {};
   
 transactions.forEach((account) => {
     account.transactions.forEach((transaction) => {
-      console.log("Transaction from chart loop",transaction);
+      
       const categories = transaction.category ? transaction.category : [];
-      console.log("Categories from chart loop",categories);
       categories.forEach((category) => {
         if (category) {
           if (categoryData[category]) {
@@ -29,9 +26,6 @@ transactions.forEach((account) => {
     });
   });
   
-
-console.log(Object.keys(categoryData));
-console.log(Object.values(categoryData));
     const data = {
       labels: Object.keys(categoryData),
       datasets: [

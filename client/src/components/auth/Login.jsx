@@ -39,7 +39,6 @@ const Login = () => {
       email,
       password
     };
-    console.log(userData);
     dispatch(loginUser(userData));
   };
 

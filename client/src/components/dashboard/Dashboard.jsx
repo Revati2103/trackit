@@ -10,10 +10,9 @@ const Dashboard = () => {
 
  const dispatch = useDispatch();
  const { user } = useSelector((state) => state.auth);
- const { accounts, accountsLoading, transactions } = useSelector((state) => state.plaid);
+ const { accounts, accountsLoading } = useSelector((state) => state.plaid);
  const { ready , open} = usePlaid();
-console.log('Transactions from state', transactions);
-console.log('Accounts from state', accounts);
+
   useEffect(() => {
     dispatch(getAccounts());
   }, [dispatch]);

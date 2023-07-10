@@ -2,16 +2,21 @@
     "version": 2,
     "builds":[
         {
-            "src":"./app.js",
+            "src":"server.js",
             "use":"@vercel/node"
-        }
-    ],
-    "routes":[
+        },
         {
-            "src":"/(.*)",
-            "dest":"app.js"
+            "src": "./client/build",
+            "use": "@vercel/static"
         }
     ],
+    "rewrites": [
+        {
+          "source": "/(.*)",
+          "destination": "server.js"
+        }
+      ],
+    
     "env": {
       "MONGO_URI": "${env.MONGO_URI}"
     }

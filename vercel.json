@@ -2,26 +2,17 @@
     "version": 2,
     "builds": [
       {
-        "src": "server.js",
+        "src": "./server.js",
         "use": "@vercel/node"
-      },
-      {
-        "src": "client/build",
-        "use": "@vercel/static"
       }
     ],
     "routes": [
       {
-        "src": "/api/.*",
-        "dest": "server.js"
-      },
-      {
         "src": "/(.*)",
-        "dest": "client/build/$1"
+        "dest": "/"
       }
     ],
-    "env": {
-      "MONGO_URI": "${env.MONGO_URI}"
-    }
+     "env": {
+        "MONGO_URI": "${env.MONGO_URI}"
+      }
   }
-  

@@ -4,12 +4,8 @@
   "description": "Auth in MERN",
   "main": "server.js",
   "scripts": {
-    "client-install": "npm install --prefix client",
     "server": "nodemon server.js",
-    "client": "npm start --prefix client",
-    "client-build": "npm run build --prefix client",
-    "start": "node server.js",
-    "dev": "concurrently \"npm run client\" \"npm run server\""
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",

@@ -14,6 +14,9 @@ const app = express();
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cors())
+app.use(cors({
+  origin: 'https://trackit-kohl.vercel.app/'
+}));
 
 //Passport middleware .
 

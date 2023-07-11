@@ -19,7 +19,7 @@ Trackit is a personal finance management app that I designed and developed using
 
 ## Demo
 
-http://trackit-env.eba-jtswhncx.us-west-2.elasticbeanstalk.com/
+https://trackit-personal-finance.vercel.app/
 
 ## Installation
 

@@ -10,11 +10,11 @@ import {
 } from "./types";
 
 //Add account
-
+//`${process.env.REACT_APP_API_URL}/api/users/register`
 export const addAccount = (plaidData) => (dispatch) => {
   const accounts = plaidData.accounts;
   axios
-    .post("/api/plaid/accounts/add", plaidData)
+    .post(`${process.env.REACT_APP_API_URL}/api/plaid/accounts/add`, plaidData)
     .then(res =>
       dispatch({
         type: ADD_ACCOUNT,
@@ -39,7 +39,7 @@ export const deleteAccount = (plaidData) => (dispatch) => {
         account => account._id !== id
       );
       axios
-        .delete(`/api/plaid/accounts/${id}`)
+        .delete(`${process.env.REACT_APP_API_URL}/api/plaid/accounts/${id}`)
         .then(res =>
           dispatch({
             type: DELETE_ACCOUNT,
@@ -55,7 +55,7 @@ export const deleteAccount = (plaidData) => (dispatch) => {
 export const getAccounts = () => (dispatch) => {
     dispatch(setAccountsLoading());
     axios
-      .get("/api/plaid/accounts")
+      .get(`${process.env.REACT_APP_API_URL}/api/plaid/accounts`)
       .then(res =>
         dispatch({
           type: GET_ACCOUNTS,
@@ -80,7 +80,7 @@ export const getAccounts = () => (dispatch) => {
 export const getTransactions = (plaidData) => (dispatch) => {
     dispatch(setTransactionsLoading());
     axios
-      .post("/api/plaid/accounts/transactions", plaidData)
+      .post(`${process.env.REACT_APP_API_URL}/api/plaid/accounts/transactions`, plaidData)
       .then(res =>
         dispatch({
           type: GET_TRANSACTIONS,

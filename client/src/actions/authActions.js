@@ -11,7 +11,7 @@ import {
 
 export const registerUser = (userData) => (dispatch) => {
   axios
-    .post("/api/users/register", userData)
+    .post(`${process.env.REACT_APP_API_URL}/api/users/register`, userData)
     .then((res) => {
       const navigate = useNavigate();
       navigate("/login");
@@ -30,7 +30,7 @@ export const registerUser = (userData) => (dispatch) => {
 
 export const loginUser = (userData) => (dispatch) => {
   axios
-    .post("/api/users/login", userData)
+    .post(`${process.env.REACT_APP_API_URL}/api/users/login`, userData)
     .then((res) => {
       const { token } = res.data;
       localStorage.setItem("jwtToken", token);

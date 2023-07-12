@@ -19,7 +19,7 @@ export const usePlaid = () => {
       };
       axios
         .post(
-          `${process.env.REACT_APP_API_URL}/api/exchange_public_token`,
+          `/api/exchange_public_token`,
           JSON.stringify({ public_token: publicToken, metadata }),
           {
             headers: {
@@ -29,6 +29,7 @@ export const usePlaid = () => {
           }
         )
         .then((res) => {
+          console.log("Res", res);
           JSON.stringify(res.data);
           plaidData.accessToken = res.data.access_token;
           plaidData.item_id = res.data.item_id;
@@ -46,8 +47,9 @@ export const usePlaid = () => {
         setToken(linkToken);
       } else {
         axios
-          .get(`${process.env.REACT_APP_API_URL}/api/create_link_token`)
+          .get(`/api/create_link_token`)
           .then((res) => {
+            console.log("Create token res", res);
             JSON.stringify(res.data);
             setToken(res.data.link_token);
             localStorage.setItem("link_token", res.data.link_token);

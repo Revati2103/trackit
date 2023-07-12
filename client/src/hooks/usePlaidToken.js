@@ -19,7 +19,7 @@ export const usePlaid = () => {
       };
       axios
         .post(
-          "/api/exchange_public_token",
+          `${process.env.REACT_APP_API_URL}/api/exchange_public_token`,
           JSON.stringify({ public_token: publicToken, metadata }),
           {
             headers: {
@@ -46,7 +46,7 @@ export const usePlaid = () => {
         setToken(linkToken);
       } else {
         axios
-          .get("/api/create_link_token")
+          .get(`${process.env.REACT_APP_API_URL}/api/create_link_token`)
           .then((res) => {
             JSON.stringify(res.data);
             setToken(res.data.link_token);

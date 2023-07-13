@@ -104,7 +104,8 @@ const getTransactions = async (req, res) => {
           // Handle pagination
           while (response.data["transactions"].length < response.data["total_transactions"]) {
             request["options"] = { offset: response.data["transactions"].length };
-            response = await client.transactions.get(request);
+            //response = await client.transactions.get(request);
+            response = await client.transactionsGet(request);
             transactions = transactions.concat(response.data["transactions"]);
           }
           transactions = transactions.concat(response.data["transactions"]);

@@ -2,7 +2,7 @@
 
 # Trackit
 
-Downtime detector is a web app that provides immediate text alerts to users via Twilio sms service when a monitored website goes down.
+Trackit is a webapp that allows users to access and manage all their financial data at one place.
 
 ## Table of Contents
 
